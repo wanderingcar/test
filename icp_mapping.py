@@ -141,11 +141,11 @@ def cal_delta_icp(x, y, theta, lidar_0, lidar_1, gps_0, gps_1):
     return x, y, theta
 
 
-def mapping(x, y, theta, lidar, map):
+def mapping(px, py, theta, lidar, map):
     """
     adds point at map with rotation transformation
-    :param x: pose x
-    :param y: pose y
+    :param px: pose x
+    :param py: pose y
     :param theta: pose theta
     :param lidar: lidar data at t
     :param map: map class
@@ -172,7 +172,7 @@ def mapping(x, y, theta, lidar, map):
 
     rot_mat = np.array([[c, -s], [s, c]])
 
-    glob = rot_mat @ result + np.array([x, y])
+    glob = rot_mat @ result + np.array([px, py])
 
     glob = glob.T
 
@@ -199,8 +199,8 @@ def main():
 
     length = len(lidar)
 
-    # fig = plt.figure()
-    # ax = fig.gca()
+    fig = plt.figure()
+    ax = fig.gca()
 
     for t in range(len(lidar) - 1):
         # pose update
@@ -210,7 +210,7 @@ def main():
                                                          [gps_x[t + 1], gps_y[t + 1], gps_theta[t + 1]])
         print(t, "pose /", length)
 
-        # im = ax.scatter(global_x, global_y, s=0.5)
+        im = ax.scatter(global_x, global_y, s=0.5)
         # map update
         mapping(global_x, global_y, global_theta, lidar.iloc[t + 1], map)
         print(t, "map /", length)
@@ -218,17 +218,17 @@ def main():
         print(t, global_x, global_y, global_theta)
 
     # plot map
-    fig = plt.figure()
-    ax = fig.gca()
-    map_length = len(map.data)
-    for i in range(len(map.data)):
-        im = ax.scatter(map.data[i][0], map.data[i][1], s=0.5)
-        print("plot", i, "/", map_length)
-
+    # fig = plt.figure()
+    # ax = fig.gca()
+    # map_length = len(map.data)
+    # for i in range(len(map.data)):
+    #     im = ax.scatter(map.data[i][0], map.data[i][1], s=0.5)
+    #     print("plot", i, "/", map_length)
+    #
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     plt.gca().set_aspect("equal")
-    plt.show()
+    plt.savefig("wholetraj0.1.png")
 
 
 if __name__ == '__main__':
