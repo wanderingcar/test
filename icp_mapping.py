@@ -52,7 +52,7 @@ def load_lidar():
     count = 0
 
     # len(file_list)
-    for i in range(len(file_list)):
+    for i in range(1):
         new = pd.read_csv(path + '/' + file_list[i], header=None)
         new.columns = rng
         for j in range(len(new)):
@@ -172,7 +172,7 @@ def mapping(px, py, theta, lidar, map):
 
     rot_mat = np.array([[c, -s], [s, c]])
 
-    glob = rot_mat @ result + np.array([px, py])
+    glob = rot_mat @ result + np.array([px, py]).reshape(2, 1)
 
     glob = glob.T
 
@@ -199,8 +199,8 @@ def main():
 
     length = len(lidar)
 
-    fig = plt.figure()
-    ax = fig.gca()
+    # fig = plt.figure()
+    # ax = fig.gca()
 
     for t in range(len(lidar) - 1):
         # pose update
@@ -210,7 +210,7 @@ def main():
                                                          [gps_x[t + 1], gps_y[t + 1], gps_theta[t + 1]])
         print(t, "pose /", length)
 
-        im = ax.scatter(global_x, global_y, s=0.5)
+        # im = ax.scatter(global_x, global_y, s=0.5)
         # map update
         mapping(global_x, global_y, global_theta, lidar.iloc[t + 1], map)
         print(t, "map /", length)
@@ -218,17 +218,17 @@ def main():
         print(t, global_x, global_y, global_theta)
 
     # plot map
-    # fig = plt.figure()
-    # ax = fig.gca()
-    # map_length = len(map.data)
-    # for i in range(len(map.data)):
-    #     im = ax.scatter(map.data[i][0], map.data[i][1], s=0.5)
-    #     print("plot", i, "/", map_length)
-    #
+    fig = plt.figure()
+    ax = fig.gca()
+    map_length = len(map.data)
+    for i in range(len(map.data)):
+        im = ax.scatter(map.data[i][0], map.data[i][1], s=0.5)
+        print("plot", i, "/", map_length)
+
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     plt.gca().set_aspect("equal")
-    plt.savefig("wholetraj0.1.png")
+    plt.savefig("1map0.1.png")
 
 
 if __name__ == '__main__':
